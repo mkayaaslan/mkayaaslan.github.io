@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!--
+  The app invite's landing page: https://mkayaaslan.github.io/get
+  (StoreUrls.inviteLanding, docs/PLAN_1.2.2.md A3). Published on the
+  developer site, the repo mkayaaslan.github.io that also serves
+  app-ads.txt: this file as get/index.html, icon.png as get/icon.png.
+
+  🔴 One link for every invite, whatever phone either side has: an iPhone
+  goes to the App Store, an Android phone to Google Play, anything else sees
+  both. The iOS app may not name Google Play (App Review 2.3.10), so the
+  invite never carries a store link itself. Invites stay in chats for years:
+  this address must keep working.
+
+  No cookies, no analytics, nothing loaded from another site: the person
+  opening it has not agreed to anything yet.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Marilo</title>
+  <meta name="description" content="See your group on one live map. Get Marilo for iPhone or Android.">
+  <!-- The card WhatsApp and Messages show instead of a bare address. Their
+       preview crawlers do not run the script below, so they stay here. -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Marilo">
+  <meta property="og:title" content="Marilo">
+  <meta property="og:description" content="See your group on one live map.">
+  <meta property="og:url" content="https://mkayaaslan.github.io/get/">
+  <meta property="og:image" content="https://mkayaaslan.github.io/get/icon.png">
+  <meta property="og:image:width" content="512">
+  <meta property="og:image:height" content="512">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <script>
+    (function () {
+      var ua = navigator.userAgent || '';
+      // iPadOS says "Macintosh"; only its touch points give it away.
+      var apple = /iPhone|iPad|iPod/.test(ua) ||
+          (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+      if (apple) {
+        location.replace('https://apps.apple.com/app/id6819201049');
+      } else if (/Android/.test(ua)) {
+        location.replace(
+          'https://play.google.com/store/apps/details?id=com.mkayaaslan.rallyo');
+      }
+    })();
+  </script>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --background: #f4f6f8;
+      --text: #0f172a;
+      --muted: #475569;
+      --button: #0f172a;
+      --on-button: #ffffff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #0b1120;
+        --text: #f1f5f9;
+        --muted: #cbd5e1;
+        --button: #00b4ff;
+        --on-button: #0f172a;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: var(--background);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+    }
+    main {
+      width: min(420px, calc(100% - 32px));
+      padding: 40px 0;
+      text-align: center;
+    }
+    img {
+      width: 96px;
+      height: 96px;
+      border-radius: 22px;
+    }
+    h1 {
+      margin: 16px 0 4px;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    p {
+      margin: 0 0 28px;
+      color: var(--muted);
+    }
+    a {
+      display: block;
+      margin: 12px 0;
+      padding: 14px 20px;
+      border-radius: 12px;
+      background: var(--button);
+      color: var(--on-button);
+      font-weight: 600;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <img src="icon.png" alt="">
+    <h1>Marilo</h1>
+    <p>See your group on one live map.</p>
+    <a href="https://apps.apple.com/app/id6819201049">Download on the App Store</a>
+    <a href="https://play.google.com/store/apps/details?id=com.mkayaaslan.rallyo">Get it on Google Play</a>
+  </main>
+</body>
+</html>
