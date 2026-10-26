@@ -16,8 +16,10 @@
   only got "Action can't be completed" (26 Oct 2026), and TikTok has blocked
   App Store links in bios since 2023. A redirect there leaves the visitor on
   the store's web page with nothing that works, so TikTok gets this page with
-  the way out: its ••• menu opens the page in the phone's browser, where the
-  redirect above works.
+  the one way out: its ••• menu opens the page in the phone's browser, where
+  the redirect above works. No store button there: inside TikTok it only got
+  the same "Action can't be completed" and drew people away from the steps
+  that work (26 Oct).
 
   No cookies, no analytics, nothing loaded from another site: the person
   opening it has not agreed to anything yet. The text follows the phone's
@@ -48,13 +50,11 @@
       // iPadOS says "Macintosh"; only its touch points give it away.
       var apple = /iPhone|iPad|iPod/.test(ua) ||
           (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
-      var android = !apple && /Android/.test(ua);
       if (/musical_ly|Bytedance/i.test(ua)) {
-        document.documentElement.className =
-            'tiktok' + (apple ? ' apple' : android ? ' android' : '');
+        document.documentElement.className = 'tiktok';
       } else if (apple) {
         location.replace('https://apps.apple.com/app/id6819201049');
-      } else if (android) {
+      } else if (/Android/.test(ua)) {
         location.replace(
           'https://play.google.com/store/apps/details?id=com.mkayaaslan.rallyo');
       }
@@ -124,7 +124,7 @@
     .hint, .arrow { display: none; }
     .tiktok .hint {
       display: block;
-      margin: 0 0 16px;
+      margin: 0;
       padding: 16px;
       border-radius: 12px;
       background: var(--surface);
@@ -157,13 +157,7 @@
     @media (prefers-reduced-motion: reduce) {
       .tiktok .arrow { animation: none; }
     }
-    .tiktok.apple #google-play,
-    .tiktok.android #app-store { display: none; }
-    .tiktok a {
-      background: transparent;
-      color: var(--text);
-      box-shadow: inset 0 0 0 1px var(--muted);
-    }
+    .tiktok a { display: none; }
   </style>
 </head>
 <body>
@@ -179,8 +173,8 @@
       <strong data-text="hintTitle">Open this page in your browser</strong>
       <span data-text="hintBody">TikTok can't open the store. Tap ••• at the top right and choose to open in your browser.</span>
     </div>
-    <a id="app-store" href="https://apps.apple.com/app/id6819201049" data-text="appStore">Download on the App Store</a>
-    <a id="google-play" href="https://play.google.com/store/apps/details?id=com.mkayaaslan.rallyo" data-text="googlePlay">Get it on Google Play</a>
+    <a href="https://apps.apple.com/app/id6819201049" data-text="appStore">Download on the App Store</a>
+    <a href="https://play.google.com/store/apps/details?id=com.mkayaaslan.rallyo" data-text="googlePlay">Get it on Google Play</a>
   </main>
   <script>
     (function () {
@@ -285,22 +279,6 @@
       var nodes = document.querySelectorAll('[data-text]');
       for (var j = 0; j < nodes.length; j++) {
         nodes[j].textContent = text[lang][nodes[j].getAttribute('data-text')];
-      }
-
-      // Inside TikTok the button asks for the store app itself. Where TikTok
-      // lets that through, the store opens; where it does not, TikTok says
-      // "Action can't be completed" and the visitor is still here, next to
-      // the steps that work. The store's web page would strand them.
-      var classes = ' ' + root.className + ' ';
-      if (classes.indexOf(' tiktok ') < 0) return;
-      if (classes.indexOf(' apple ') >= 0) {
-        document.getElementById('app-store').href =
-            'itms-apps://apps.apple.com/app/id6819201049';
-      } else if (classes.indexOf(' android ') >= 0) {
-        document.getElementById('google-play').href =
-            'intent://play.google.com/store/apps/details?id=com.mkayaaslan.rallyo' +
-            '#Intent;scheme=https;action=android.intent.action.VIEW;' +
-            'package=com.android.vending;end';
       }
     })();
   </script>
