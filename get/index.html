@@ -15,11 +15,18 @@
   app: on the Play page it opened from the profile link, Play's own buttons
   only got "Action can't be completed" (26 Oct 2026), and TikTok has blocked
   App Store links in bios since 2023. A redirect there leaves the visitor on
-  the store's web page with nothing that works, so TikTok gets this page with
-  the one way out: its ••• menu opens the page in the phone's browser, where
-  the redirect above works. No store button there: inside TikTok it only got
-  the same "Action can't be completed" and drew people away from the steps
-  that work (26 Oct).
+  the store's web page with nothing that works, so TikTok gets this page
+  instead, with two ways out to the phone's browser, where the redirect above
+  works:
+  - First, TikTok's ••• menu → open in browser, with an arrow at it. Profile
+    links, where most visitors come from, have this menu, and it is less work
+    than copy and paste (27 Oct).
+  - Then a button that copies this address, for the browser TikTok opens from
+    a DM, which has no menu at all (27 Oct). Copying needs nothing from
+    TikTok. There the arrow lands on the close button of TikTok's link
+    warning; the line above the button says what to do without a •••.
+  No store button: inside TikTok it only got the same "Action can't be
+  completed" and drew people away from the steps that work (26 Oct).
 
   No cookies, no analytics, nothing loaded from another site: the person
   opening it has not agreed to anything yet. The text follows the phone's
@@ -65,6 +72,7 @@
       color-scheme: light dark;
       --background: #f4f6f8;
       --surface: #ffffff;
+      --line: #e2e8f0;
       --text: #0f172a;
       --muted: #475569;
       --button: #0f172a;
@@ -74,6 +82,7 @@
       :root {
         --background: #0b1120;
         --surface: #1e293b;
+        --line: #334155;
         --text: #f1f5f9;
         --muted: #cbd5e1;
         --button: #00b4ff;
@@ -111,20 +120,29 @@
       color: var(--muted);
       text-wrap: balance;
     }
-    a {
+    a, button {
       display: block;
       margin: 12px 0;
       padding: 14px 20px;
       border-radius: 12px;
       background: var(--button);
       color: var(--on-button);
+      font: inherit;
       font-weight: 600;
       text-decoration: none;
+    }
+    /* Second to the ••• menu, which is less work. */
+    button {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--text);
+      box-shadow: inset 0 0 0 1px var(--muted);
+      cursor: pointer;
     }
     .hint, .arrow { display: none; }
     .tiktok .hint {
       display: block;
-      margin: 0;
       padding: 16px;
       border-radius: 12px;
       background: var(--surface);
@@ -137,6 +155,20 @@
     .hint span {
       color: var(--muted);
       text-wrap: pretty;
+    }
+    .no-menu {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+    .hint code {
+      display: block;
+      color: var(--muted);
+      font: inherit;
+      font-size: 14px;
+      text-align: center;
+      -webkit-user-select: all;
+      user-select: all;
     }
     /* Korean breaks between words, not inside them. */
     :lang(ko) { word-break: keep-all; }
@@ -169,9 +201,14 @@
     <img src="icon.png" alt="">
     <h1>Marilo</h1>
     <p data-text="tagline">See your group on one live map.</p>
-    <div class="hint" role="note">
+    <div class="hint">
       <strong data-text="hintTitle">Open this page in your browser</strong>
       <span data-text="hintBody">TikTok can't open the store. Tap ••• at the top right and choose to open in your browser.</span>
+      <div class="no-menu">
+        <span data-text="noMenu">No ••• at the top? Copy the link and paste it into your browser.</span>
+        <button type="button" id="copy" data-text="copyLink">Copy link</button>
+        <code id="link">https://mkayaaslan.github.io/get</code>
+      </div>
     </div>
     <a href="https://apps.apple.com/app/id6819201049" data-text="appStore">Download on the App Store</a>
     <a href="https://play.google.com/store/apps/details?id=com.mkayaaslan.rallyo" data-text="googlePlay">Get it on Google Play</a>
@@ -183,6 +220,9 @@
           tagline: "See your group on one live map.",
           hintTitle: "Open this page in your browser",
           hintBody: "TikTok can't open the store. Tap ••• at the top right and choose to open in your browser.",
+          noMenu: "No ••• at the top? Copy the link and paste it into your browser.",
+          copyLink: "Copy link",
+          copied: "Link copied",
           appStore: "Download on the App Store",
           googlePlay: "Get it on Google Play"
         },
@@ -190,6 +230,9 @@
           tagline: "Grubunu tek bir canlı haritada gör.",
           hintTitle: "Bu sayfayı tarayıcında aç",
           hintBody: "TikTok mağazayı açamıyor. Sağ üstteki ••• simgesine dokun ve tarayıcıda açmayı seç.",
+          noMenu: "Üstte ••• yok mu? Bağlantıyı kopyala ve tarayıcına yapıştır.",
+          copyLink: "Bağlantıyı kopyala",
+          copied: "Bağlantı kopyalandı",
           appStore: "App Store'dan indir",
           googlePlay: "Google Play'den indir"
         },
@@ -197,6 +240,9 @@
           tagline: "Sieh deine Gruppe auf einer Live-Karte.",
           hintTitle: "Öffne diese Seite in deinem Browser",
           hintBody: "TikTok kann den Store nicht öffnen. Tippe oben rechts auf ••• und öffne die Seite in deinem Browser.",
+          noMenu: "Oben kein •••? Kopiere den Link und füge ihn in deinen Browser ein.",
+          copyLink: "Link kopieren",
+          copied: "Link kopiert",
           appStore: "Laden im App Store",
           googlePlay: "Jetzt bei Google Play"
         },
@@ -204,6 +250,9 @@
           tagline: "Zie je groep op één livekaart.",
           hintTitle: "Open deze pagina in je browser",
           hintBody: "TikTok kan de store niet openen. Tik rechtsboven op ••• en open de pagina in je browser.",
+          noMenu: "Geen ••• bovenaan? Kopieer de link en plak hem in je browser.",
+          copyLink: "Link kopiëren",
+          copied: "Link gekopieerd",
           appStore: "Download in de App Store",
           googlePlay: "Ontdek het op Google Play"
         },
@@ -211,6 +260,9 @@
           tagline: "Voyez votre groupe sur une seule carte en direct.",
           hintTitle: "Ouvrez cette page dans votre navigateur",
           hintBody: "TikTok ne peut pas ouvrir la boutique d’applications. Touchez ••• en haut à droite, puis ouvrez la page dans votre navigateur.",
+          noMenu: "Pas de ••• en haut ? Copiez le lien et collez-le dans votre navigateur.",
+          copyLink: "Copier le lien",
+          copied: "Lien copié",
           appStore: "Télécharger dans l’App Store",
           googlePlay: "Disponible sur Google Play"
         },
@@ -218,6 +270,9 @@
           tagline: "Ve a tu grupo en un solo mapa en vivo.",
           hintTitle: "Abre esta página en tu navegador",
           hintBody: "TikTok no puede abrir la tienda de apps. Toca ••• arriba a la derecha y abre la página en tu navegador.",
+          noMenu: "¿No ves ••• arriba? Copia el enlace y pégalo en tu navegador.",
+          copyLink: "Copiar enlace",
+          copied: "Enlace copiado",
           appStore: "Descárgalo en el App Store",
           googlePlay: "Disponible en Google Play"
         },
@@ -225,6 +280,9 @@
           tagline: "Vedi il tuo gruppo su un’unica mappa dal vivo.",
           hintTitle: "Apri questa pagina nel browser",
           hintBody: "TikTok non riesce ad aprire lo store. Tocca ••• in alto a destra e apri la pagina nel browser.",
+          noMenu: "Non vedi ••• in alto? Copia il link e incollalo nel browser.",
+          copyLink: "Copia link",
+          copied: "Link copiato",
           appStore: "Scarica su App Store",
           googlePlay: "Disponibile su Google Play"
         },
@@ -232,6 +290,9 @@
           tagline: "Veja seu grupo em um único mapa ao vivo.",
           hintTitle: "Abra esta página no navegador",
           hintBody: "O TikTok não consegue abrir a loja de apps. Toque em ••• no canto superior direito e abra a página no navegador.",
+          noMenu: "Não aparece ••• no topo? Copie o link e cole no navegador.",
+          copyLink: "Copiar link",
+          copied: "Link copiado",
           appStore: "Baixar na App Store",
           googlePlay: "Disponível no Google Play"
         },
@@ -239,6 +300,9 @@
           tagline: "Вся группа на одной карте в реальном времени.",
           hintTitle: "Открой эту страницу в браузере",
           hintBody: "TikTok не может открыть магазин приложений. Нажми ••• в правом верхнем углу и открой страницу в браузере.",
+          noMenu: "Вверху нет •••? Скопируй ссылку и вставь её в браузер.",
+          copyLink: "Скопировать ссылку",
+          copied: "Ссылка скопирована",
           appStore: "Скачать в App Store",
           googlePlay: "Доступно в Google Play"
         },
@@ -246,6 +310,9 @@
           tagline: "在同一张实时地图上查看你的群组。",
           hintTitle: "请在浏览器中打开此页面",
           hintBody: "TikTok 无法打开应用商店。请点按右上角的 •••，然后选择在浏览器中打开。",
+          noMenu: "顶部没有 •••？请复制链接并粘贴到浏览器中。",
+          copyLink: "复制链接",
+          copied: "链接已复制",
           appStore: "在 App Store 下载",
           googlePlay: "在 Google Play 下载"
         },
@@ -253,6 +320,9 @@
           tagline: "グループの居場所を、ライブマップで。",
           hintTitle: "このページをブラウザで開いてください",
           hintBody: "TikTokからはストアを開けません。右上の ••• からブラウザで開いてください。",
+          noMenu: "上に ••• がない場合は、リンクをコピーしてブラウザに貼り付けてください。",
+          copyLink: "リンクをコピー",
+          copied: "リンクをコピーしました",
           appStore: "App Storeからダウンロード",
           googlePlay: "Google Play で手に入れよう"
         },
@@ -260,6 +330,9 @@
           tagline: "그룹 전체를 하나의 실시간 지도에서 확인하세요.",
           hintTitle: "이 페이지를 브라우저에서 여세요",
           hintBody: "TikTok에서는 스토어를 열 수 없어요. 오른쪽 위의 •••을 누르고 브라우저에서 열기를 선택하세요.",
+          noMenu: "위에 •••이 없나요? 링크를 복사해서 브라우저에 붙여넣으세요.",
+          copyLink: "링크 복사",
+          copied: "링크를 복사했어요",
           appStore: "App Store에서 다운로드",
           googlePlay: "Google Play에서 다운로드"
         }
@@ -280,6 +353,51 @@
       for (var j = 0; j < nodes.length; j++) {
         nodes[j].textContent = text[lang][nodes[j].getAttribute('data-text')];
       }
+
+      var copy = document.getElementById('copy');
+      var link = document.getElementById('link');
+      copy.onclick = function () {
+        var address = link.textContent;
+        var copied = function () {
+          copy.textContent = text[lang].copied;
+        };
+        // Where the browser allows no copying at all, the address is left
+        // selected for the phone's own Copy.
+        var select = function () {
+          var range = document.createRange();
+          range.selectNodeContents(link);
+          var selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        };
+        // Older in-app browsers have no clipboard API but still copy a
+        // selection.
+        var copyBySelection = function () {
+          var field = document.createElement('textarea');
+          field.value = address;
+          field.setAttribute('readonly', '');
+          field.style.position = 'fixed';
+          field.style.opacity = '0';
+          document.body.appendChild(field);
+          field.select();
+          field.setSelectionRange(0, address.length);
+          var done = false;
+          try {
+            done = document.execCommand('copy');
+          } catch (e) {}
+          document.body.removeChild(field);
+          if (done) {
+            copied();
+          } else {
+            select();
+          }
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(address).then(copied, copyBySelection);
+        } else {
+          copyBySelection();
+        }
+      };
     })();
   </script>
 </body>
