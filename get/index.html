@@ -31,6 +31,15 @@
   No cookies, no analytics, nothing loaded from another site: the person
   opening it has not agreed to anything yet. The text follows the phone's
   language, in the app's twelve.
+
+  🔴 Where a visitor came from rides on to the store, so each platform's
+  installs can be told apart (28 Oct): ?s=instagram&c=boost_ep14 becomes
+  Play's referrer (utm_source / utm_campaign: Play Console acquisition and
+  Firebase first_open) and, once PROVIDER_TOKEN is set, the App Store's ct
+  (App Store Connect → App Analytics → Campaigns; Apple ignores ct without
+  pt). Without them the page forwarded nothing and every install looked the
+  same. Only short [a-z0-9_-] values pass, so nothing pasted after "?" is
+  handed on. A plain /get still goes to the plain store pages.
 -->
 <html lang="en">
 <head>
@@ -53,6 +62,31 @@
   <link rel="apple-touch-icon" href="icon.png">
   <script>
     (function () {
+      // App Store Connect's provider token for campaign links; empty sends no ct.
+      var PROVIDER_TOKEN = '';
+      var tag = function (key) {
+        var m = new RegExp('[?&]' + key + '=([a-z0-9_-]{1,40})(&|$)', 'i')
+            .exec(location.search);
+        return m ? m[1].toLowerCase() : '';
+      };
+      var source = tag('s');
+      var campaign = source ? tag('c') : '';
+      var play =
+          'https://play.google.com/store/apps/details?id=com.mkayaaslan.rallyo';
+      var appStore = 'https://apps.apple.com/app/id6819201049';
+      var self = 'https://mkayaaslan.github.io/get';
+      if (source) {
+        play += '&referrer=' + encodeURIComponent('utm_source=' + source +
+            '&utm_medium=' + (/^boost/.test(campaign) ? 'paid_social' : 'social') +
+            (campaign ? '&utm_campaign=' + campaign : ''));
+        if (PROVIDER_TOKEN) {
+          appStore += '?pt=' + PROVIDER_TOKEN + '&ct=' +
+              (campaign ? source + '_' + campaign : source).slice(0, 40) + '&mt=8';
+        }
+        self += '?s=' + source + (campaign ? '&c=' + campaign : '');
+      }
+      window.STORE = { play: play, appStore: appStore, self: self };
+
       var ua = navigator.userAgent || '';
       // iPadOS says "Macintosh"; only its touch points give it away.
       var apple = /iPhone|iPad|iPod/.test(ua) ||
@@ -60,10 +94,9 @@
       if (/musical_ly|Bytedance/i.test(ua)) {
         document.documentElement.className = 'tiktok';
       } else if (apple) {
-        location.replace('https://apps.apple.com/app/id6819201049');
+        location.replace(appStore);
       } else if (/Android/.test(ua)) {
-        location.replace(
-          'https://play.google.com/store/apps/details?id=com.mkayaaslan.rallyo');
+        location.replace(play);
       }
     })();
   </script>
@@ -349,6 +382,11 @@
         }
       }
       root.lang = lang;
+      // The buttons and the address to copy keep the visitor's tag: the copied
+      // link is opened again in the phone's browser, which then redirects.
+      document.querySelector('[data-text="appStore"]').href = window.STORE.appStore;
+      document.querySelector('[data-text="googlePlay"]').href = window.STORE.play;
+      document.getElementById('link').textContent = window.STORE.self;
       var nodes = document.querySelectorAll('[data-text]');
       for (var j = 0; j < nodes.length; j++) {
         nodes[j].textContent = text[lang][nodes[j].getAttribute('data-text')];
